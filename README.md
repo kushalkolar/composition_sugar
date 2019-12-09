@@ -6,11 +6,15 @@ See usage examples on binder\
 
 Create readable pipelines for processing data.
 
-``data >> FuncA(<params>) >> FuncB(<params>) >> FuncC(<params>) >> ...``
+```python
+data >> FuncA(*args, **kwargs) >> FuncB(*args, **kwargs) >> FuncC(*args, **kwargs) >> ...
+```
 
 This is equivalent to:
 
-``FuncC(FuncB(FuncA(data, <params>), <params>), <params>)``
+```python
+FuncC(FuncB(FuncA(data, *args, **kwargs), *args, **kwargs), *args, **kwargs)
+```
 
 ### Data Container
 
