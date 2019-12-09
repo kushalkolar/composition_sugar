@@ -7,13 +7,13 @@ See usage examples on binder\
 Create readable pipelines for processing data.
 
 ```python
-data >> FuncA(*args, **kwargs) >> FuncB(*args, **kwargs) >> FuncC(*args, **kwargs) >> ...
+data >> FuncA(args) >> FuncB(args) >> FuncC(args) >> ...
 ```
 
 This is equivalent to:
 
 ```python
-FuncC(FuncB(FuncA(data, *args, **kwargs), *args, **kwargs), *args, **kwargs)
+FuncC(FuncB(FuncA(data, args), args), args)
 ```
 
 ### Data Container
