@@ -67,21 +67,21 @@ You can also create more complex processing nodes by inheriting from Node:
 from core import Node
 
 class Complex(Node):        
-def process(self, container, *args, **kwargs):
-    # do more complex stuff
-    something_complex = self.some_other_func()
+    def process(self, container, *args, **kwargs):
+        # do more complex stuff
+        something_complex = self.some_other_func()
 
-    # do other stuff
-    final_result = do_more_stuff(something_complex)
+        # do other stuff
+        final_result = do_more_stuff(something_complex)
 
-    # the container which went through complex processing
-    return final_result
+        # the container which went through complex processing
+        return final_result
 
-def some_other_func(self, ...):
-    # does some stuff
+    def some_other_func(self, ...):
+        # does some stuff
 
-def do_more_stuff(self, ...):
-    # more stuff
+    def do_more_stuff(self, ...):
+        # more stuff
 ```
 
 See full examples on binder\
