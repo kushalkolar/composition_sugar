@@ -16,6 +16,28 @@ This is equivalent to:
 FuncC(FuncB(FuncA(data, args), args), args)
 ```
 
+#### Logging
+Besides being easily readable, the function & parameters are logged. See the binder demo for more details.
+
+```python
+>>> pprint(container.log, width=20)
+
+    [{'splice': {'data_column': '_RAW_CURVE',
+                 'start': 0,
+                 'stop': 2990}},
+     {'normalize': {'data_column': 'spliced'}},
+     {'rfft': {'data_column': 'normalize'}},
+     {'absval': {'data_column': 'fft'}},
+     {'log': {'data_column': 'absval'}},
+     {'splice': {'data_column': 'log',
+                 'start': 0,
+                 'stop': 1000}},
+     {'LDA': {'data_column': 'spliced',
+              'labels_column': 'FCLUSTER_LABELS',
+              'n_components': 2}}]
+
+``` 
+
 ### Data Container
 
 Define a data container
