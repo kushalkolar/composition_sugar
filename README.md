@@ -17,7 +17,7 @@ FuncC(FuncB(FuncA(data, args), args), args)
 ```
 
 #### Logging
-Besides being easily readable, the function & parameters are logged. See the binder demo for more details.
+Besides being more readable, the functions & parameters are logged. See the binder demo for more details.
 
 ```python
 >>> pprint(container.log, width=20)
