@@ -23,7 +23,7 @@ Define a data container
 Example with pandas DataFrame:
 
 ```python
-from core import Container
+from fcsugar import Container
 
 class DataFrameContainer(Container):
     def __init__(self, df: pd.DataFrame):
@@ -42,7 +42,7 @@ Simply use the `@node` decorator on a function to use it with a data container
 Example that splices arrays in a specific DataFrame column:
 
 ```python
-from core import node
+from fcsugar import node
 
 @node
 def splice(container, data_column, start, stop):
@@ -64,7 +64,7 @@ def func(container, *args, **kwargs):
 You can also create more complex processing nodes by inheriting from Node:
 
 ```python
-from core import Node
+from fcsugar import Node
 
 class Complex(Node):        
     def process(self, container, *args, **kwargs):
