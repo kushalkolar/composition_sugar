@@ -55,6 +55,10 @@ class Container:
         result = node.process(self, *node.args, **node.kwargs)
         return result
 
+    def load_functions(self, globals: dict, locals: dict):
+        for func in self.functions.values():
+            exec(func, globals, locals)
+
 
 class Node(metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
