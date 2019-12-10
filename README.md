@@ -4,7 +4,7 @@ Syntactic sugar for function composition in Python
 See usage examples on binder\
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kushalkolar/composition_sugar/master)
 
-Create readable pipelines for processing data.
+Create readable pipelines for processing data. It is meant for quickly writing/organizing pipelines with wrapper functions that are frequently used.
 
 ```python
 data >> FuncA(args) >> FuncB(args) >> FuncC(args) >> ...
