@@ -20,21 +20,47 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from abc import ABCMeta, abstractmethod
 from functools import wraps
+from inspect import getfullargspec, getsource
+from typing import *
 
 
 class Container:
     """
     Data Container
     """
+    def __init__(self):
+        self._log = []
+        self.functions = {}
+
+    @property
+    def log(self) -> List[dict]:
+        return self._log
+
     def __rshift__(self, node):
-        return node.process(self, *node.args, **node.kwargs)
+        arg_names = getfullargspec(node.process).args
+
+        if 'self' in arg_names:
+            arg_names.remove('self')
+        arg_names = arg_names[1:]
+
+        params = {**dict(zip(arg_names, node.args)),  # positional args
+                  **node.kwargs
+                  }
+
+        self._log.append({node.name: params})
+
+        if node.name not in self.functions.keys():
+            self.functions[node.name] = getsource(node.process)
+
+        result = node.process(self, *node.args, **node.kwargs)
+        return result
 
 
 class Node(metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
-        self.node_name = self.__class__.__name__
+        self.name = self.__class__.__name__
 
     @abstractmethod
     def process(self, t, *args, **kwargs) -> Container:
@@ -48,6 +74,7 @@ def node(func):
             def __init__(self, *args, **kwargs):
                 self.args = args
                 self.kwargs = kwargs
+                self.name = func.__name__
 
             def process(container, *args, **kwargs):
                 pass
