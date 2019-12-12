@@ -25,6 +25,7 @@ from typing import *
 from traceback import format_exc
 from ipywidgets import widgets
 from IPython.display import display
+from . import config
 
 
 class Container:
@@ -68,7 +69,8 @@ class Container:
 
         self.pipeline.append(node)
         node.subscribe(lambda: self.execute_pipeline(clear=False))
-        node.make_gui()
+        if config.show_gui:
+            node.make_gui()
         return self
 
     def load_functions(self, globals: dict, locals: dict):
@@ -91,7 +93,7 @@ def _execute_pipeline(container: Container, ix=0, clear=True):
     if ix == len(container.pipeline):
         if clear:
             container.pipeline.clear()
-            container.status_widget.value = f"\rYay! Pipeline computed without errors =D"
+        container.status_widget.value = f"\rYay! Pipeline computed without errors =D"
         return container
 
     node = container.pipeline[ix]
