@@ -20,21 +20,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from inspect import getfullargspec, getsource
+from inspect import getfullargspec, getsource, signature
 from typing import *
+from traceback import format_exc
+from ipywidgets import widgets
+from IPython.display import display
 
 
 class Container:
     """
     Data Container
     """
+
     def __init__(self):
         self._log = []
         self.functions = {}
+        self.pipeline = []
+        self.subs = []
 
+        self.status_widget = widgets.Textarea(description='Status', value='',
+                                              layout=widgets.Layout(width='80%'))
+        display(self.status_widget)
+
+# TODO: Think about how to deal with log if the pipeline is executed consecutively multiple times
     @property
     def log(self) -> List[dict]:
         return self._log
+
+    def append_log(self, node):
+        self._log.append({node.name: node.params})
+
+        if node.name not in self.functions.keys():
+            self.functions[node.name] = getsource(node.process)
 
     def __rshift__(self, node):
         arg_names = getfullargspec(node.process).args
@@ -47,37 +64,111 @@ class Container:
                   **node.kwargs
                   }
 
-        self._log.append({node.name: params})
+        node.params = params
 
-        if node.name not in self.functions.keys():
-            self.functions[node.name] = getsource(node.process)
-
-        result = node.process(self, *node.args, **node.kwargs)
-        return result
+        self.pipeline.append(node)
+        node.subscribe(lambda: self.execute_pipeline(clear=False))
+        node.make_gui()
+        return self
 
     def load_functions(self, globals: dict, locals: dict):
         for func in self.functions.values():
             exec(func, globals, locals)
 
+    def execute_pipeline(self, clear=True):
+        container = _execute_pipeline(self, clear=clear)
+
+        for sub in container.subs:
+            sub(container)
+
+        return container
+
+    def connect(self, func: callable):
+        self.subs.append(func)
+
+
+def _execute_pipeline(container: Container, ix=0, clear=True):
+    if ix == len(container.pipeline):
+        if clear:
+            container.pipeline.clear()
+        return container
+
+    node = container.pipeline[ix]
+    container.append_log(node)
+
+    container.status_widget.value = f"\rProcessing node: {node.name}"
+
+    try:
+        return _execute_pipeline(node.process(container, **node.params), ix + 1, clear=clear)
+    except Exception as e:
+        if clear:
+            container.pipeline.clear()
+        container.status_widget.value = str(e)
+        container.status_widget.value = format_exc()
+
+        return container
+
 
 class Node(metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
+        self.name = self.__class__.__name__
         self.args = args
         self.kwargs = kwargs
-        self.name = self.__class__.__name__
+        self.params = None
+
+        self.subs = []
 
     @abstractmethod
     def process(self, t, *args, **kwargs) -> Container:
         pass
 
+    def make_gui(self):
+        sig = signature(self.process)
+
+        # label = f"======= {self.name} =======\n"
+
+        label = f"<b>{self.name}</b>"
+
+        display(widgets.HTML(value=label))
+
+        for i, arg_name in enumerate(sig.parameters):
+            if i == 0:
+                continue
+
+            arg_type = sig.parameters[arg_name].annotation
+
+            wd = dict(description=arg_name, value=self.params[arg_name])
+
+            if arg_type is str:
+                w = widgets.Text(**wd)
+            elif arg_type is int:
+                w = widgets.IntText(**wd)
+            elif arg_type is float:
+                w = widgets.FloatText(**wd)
+            else:
+                return
+
+            w.observe(self.set_param)
+
+            display(w)
+
+    def set_param(self, widget):
+        name = widget['owner'].description
+        val = widget['owner'].value
+        self.params[name] = val
+        for sub in self.subs:
+            sub()
+
+    def subscribe(self, func: callable):
+        self.subs.append(func)
+
 
 def node(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        class _Node:
+        class _Node(Node):
             def __init__(self, *args, **kwargs):
-                self.args = args
-                self.kwargs = kwargs
+                Node.__init__(self, *args, **kwargs)
                 self.name = func.__name__
 
             def process(container, *args, **kwargs):
@@ -87,4 +178,5 @@ def node(func):
         n.process = func
 
         return n
+
     return wrapper
