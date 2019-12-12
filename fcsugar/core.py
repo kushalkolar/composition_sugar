@@ -91,6 +91,7 @@ def _execute_pipeline(container: Container, ix=0, clear=True):
     if ix == len(container.pipeline):
         if clear:
             container.pipeline.clear()
+            container.status_widget.value = f"\rYay! Pipeline computed without errors =D"
         return container
 
     node = container.pipeline[ix]
