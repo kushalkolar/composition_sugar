@@ -26,6 +26,7 @@ from traceback import format_exc
 from ipywidgets import widgets
 from IPython.display import display
 from . import config
+from collections import OrderedDict
 
 
 class Container:
@@ -34,7 +35,7 @@ class Container:
     """
 
     def __init__(self):
-        self._log = []
+        self._log = OrderedDict()
         self.functions = {}
         self.pipeline = []
         self.subs = []
@@ -46,10 +47,19 @@ class Container:
 # TODO: Think about how to deal with log if the pipeline is executed consecutively multiple times
     @property
     def log(self) -> List[dict]:
-        return self._log
+        d = OrderedDict()
+        for node in self._log.keys():
+
+            n_occurances = [item.split('.')[0] for item in list(d)].count(node.name)
+
+            name = f"{node.name}.{n_occurances}"
+
+            d[name] = self._log[node]
+        return d
 
     def append_log(self, node):
-        self._log.append({node.name: node.params})
+        self._log[node] = node.params
+        # self._log.append({node.name: node.params})
 
         if node.name not in self.functions.keys():
             self.functions[node.name] = getsource(node.process)
