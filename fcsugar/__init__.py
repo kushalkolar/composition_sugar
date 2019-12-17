@@ -1,1 +1,1 @@
-from .core import Container, Node, node
+from .core import Container, Node, node, config
