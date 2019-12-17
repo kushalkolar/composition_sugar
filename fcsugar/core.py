@@ -15,7 +15,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 """
 
 from abc import ABCMeta, abstractmethod
@@ -59,7 +58,6 @@ class Container:
 
     def append_log(self, node):
         self._log[node] = node.params
-        # self._log.append({node.name: node.params})
 
         if node.name not in self.functions.keys():
             self.functions[node.name] = getsource(node.process)
@@ -127,6 +125,8 @@ class Node(metaclass=ABCMeta):
         self.name = self.__class__.__name__
         self.args = args
         self.kwargs = kwargs
+        self.signature = None
+
         self.params = None
 
         self.subs = []
@@ -136,19 +136,17 @@ class Node(metaclass=ABCMeta):
         pass
 
     def make_gui(self):
-        sig = signature(self.process)
-
-        # label = f"======= {self.name} =======\n"
+        self.signature = signature(self.process)
 
         label = f"<b>{self.name}</b>"
 
         display(widgets.HTML(value=label))
 
-        for i, arg_name in enumerate(sig.parameters):
+        for i, arg_name in enumerate(self.signature.parameters):
             if i == 0:
                 continue
 
-            arg_type = sig.parameters[arg_name].annotation
+            arg_type = self.signature.parameters[arg_name].annotation
 
             wd = dict(description=arg_name, value=self.params[arg_name])
 
