@@ -26,6 +26,7 @@ from typing import Optional
 class TempFile:
     def __init__(self, name: Optional[str] = None,
                  parent_dir: Optional[str] = None,
+                 parent_subdir: Optional[str] = None,
                  ext: Optional[str] = None):
         """
 
@@ -38,6 +39,11 @@ class TempFile:
 
         if parent_dir is None:
             parent_dir = config.config_dir
+
+        if parent_subdir is not None:
+            parent_dir = os.path.join(parent_dir, parent_subdir)
+
+        os.makedirs(parent_dir, exist_ok=True)
 
         if ext is None:
             ext = ''
