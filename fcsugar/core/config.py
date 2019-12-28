@@ -17,7 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import os
+
 show_gui = True
 
 # 'notebook' or 'external'
 bokeh_output = 'notebook'
+
+config_dir = os.path.join(os.environ['HOME'], '.fcsugar')
+
+if not os.path.isdir(config_dir):
+    os.makedirs(config_dir)

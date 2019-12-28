@@ -9,7 +9,7 @@ qual_cmaps = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1',
 
 
 def make_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'bokeh',
-                  spacing: str = 'uniform', alpha: float = 1.0) -> List[Union[List[str], np.ndarray]]:
+                  spacing: str = 'uniform', alpha: float = 1.0) -> List[Union[str, np.ndarray]]:
     """
     If non-qualitative map: returns list of colors evenly spread through the chosen colormap.
     If qualitative map: returns subsequent colors from the chosen colormap
@@ -91,7 +91,7 @@ def get_colormap(labels: iter, cmap: str, **kwargs) -> OrderedDict:
     return OrderedDict(zip(labels, colors))
 
 
-def map_labels_to_colors(labels: iter, cmap: str, **kwargs) -> list:
+def map_labels_to_colors(labels: iter, cmap: str, **kwargs) -> List[Union[str, np.ndarray]]:
     """
     Map labels onto colors according to chosen colormap
 

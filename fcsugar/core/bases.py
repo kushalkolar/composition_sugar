@@ -26,7 +26,8 @@ from ipywidgets import widgets
 from IPython.display import display
 from . import config
 from collections import OrderedDict
-
+out = widgets.Output()
+from ipywidgets import interact
 
 class Container:
     """
