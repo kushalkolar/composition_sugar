@@ -99,6 +99,9 @@ class Container:
 
 
 def _execute_pipeline(container: Container, ix=0, clear=True):
+    if not isinstance(container, Container):
+        return container
+    
     if ix == len(container.pipeline):
         if clear:
             container.pipeline.clear()
