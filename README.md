@@ -16,7 +16,7 @@ This is equivalent to:
 FuncC(FuncB(FuncA(data, args), args), args)
 ```
 
-#### Automatic GUI generation and updating live plots
+## Automatic GUI generation and updating live plots
 Write a pipeline and automatically generate a GUI which can be used to process data that are fed into live plots. Uses ipywidgets.
 
 **See the following notebook for details:** `examples/gui_live_plotting.ipynb`
@@ -24,7 +24,7 @@ Write a pipeline and automatically generate a GUI which can be used to process d
 
 
 
-#### Logging
+## Logging
 Besides being more readable, the functions & parameters are logged. See the binder demo for more details.
 
 ```python
@@ -46,7 +46,7 @@ Besides being more readable, the functions & parameters are logged. See the bind
 
 ``` 
 
-### Data Container
+## Data Container
 
 Define a data container
 
@@ -65,7 +65,7 @@ class DataFrameContainer(Container):
         return cls(df)
 ````
 
-### Processing Node
+## Processing Node
 
 Simply use the `@node` decorator on a function to use it with a data container
 
