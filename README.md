@@ -17,7 +17,7 @@ FuncC(FuncB(FuncA(data, args), args), args)
 ```
 
 ## Automatic GUI generation and updating live plots
-Write a pipeline and automatically generate a GUI which can be used to process data that are fed into live plots.
+Write a pipeline and automatically generate a GUI for parameter entry. This GUI can be connected to live plots.
 
 **See the following notebook for details:**  `examples/gui_live_plotting.ipynb`
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kushalkolar/composition_sugar/master)
