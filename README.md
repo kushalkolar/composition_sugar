@@ -16,6 +16,14 @@ This is equivalent to:
 FuncC(FuncB(FuncA(data, args), args), args)
 ```
 
+#### Automatic GUI generation and updating live plots
+Write a pipeline and automatically generate a GUI which can be used to process data that are fed into live plots. Uses ipywidgets.
+
+**See the following notebook for details:** `examples/gui_live_plotting.ipynb`
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kushalkolar/composition_sugar/master)
+
+
+
 #### Logging
 Besides being more readable, the functions & parameters are logged. See the binder demo for more details.
 
