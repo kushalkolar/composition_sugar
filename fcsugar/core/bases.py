@@ -27,22 +27,30 @@ from IPython.display import display
 from . import config
 from collections import OrderedDict
 out = widgets.Output()
-from ipywidgets import interact
+from copy import deepcopy
+
 
 class Container:
     """
     Data Container
     """
 
-    def __init__(self):
+    def __init__(self, status_widget: Union[widgets.Textarea, bool] = None):
         self._log = OrderedDict()
         self.functions = {}
         self.pipeline = []
         self.subs = []
 
-        self.status_widget = widgets.Textarea(description='Status', value='',
-                                              layout=widgets.Layout(width='80%'))
-        display(self.status_widget)
+        if status_widget is None:
+            self.status_widget = widgets.Textarea(description='Status', value='',
+                                                  layout=widgets.Layout(width='80%'))
+            display(self.status_widget)
+
+        elif isinstance(status_widget, widgets.Textarea):
+            self.status_widget = status_widget
+
+        elif not status_widget:
+            self.status_widget = None
 
 # TODO: Think about how to deal with log if the pipeline is executed consecutively multiple times
     @property
@@ -89,13 +97,29 @@ class Container:
     def execute_pipeline(self, clear=True):
         container = _execute_pipeline(self, clear=clear)
 
-        for sub in container.subs:
-            sub(container)
+        if isinstance(container, Container):
+            for sub in container.subs:
+                sub(container)
+        # if it's some other type, like a numpy array
+        else:
+            for sub in self.subs:
+                sub(container)
 
         return container
 
     def connect(self, func: callable):
         self.subs.append(func)
+
+    def deepcopy(self, memodict={}):
+        sw = self.status_widget
+
+        # status widget cannot be deep-copied since it can't be pickled
+        self.status_widget = None
+        cls = deepcopy(self)
+
+        self.status_widget = sw
+
+        return cls
 
 
 def _execute_pipeline(container: Container, ix=0, clear=True):
