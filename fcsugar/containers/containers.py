@@ -52,11 +52,11 @@ class ArrayContainer(Container):
         if array.shape != labels.shape:
             raise ValueError("Shape of array and labels must match exactly")
 
-        self.arrary = array
+        self.array = array
         self.labels = labels
 
     def to_dict(self):
-        return {'array': self.arrary, 'labels': self.labels}
+        return {'array': self.array, 'labels': self.labels}
 
     @classmethod
     def from_hdf5(cls, path: str, key: str = 'ARRAY_CONTAINER'):
@@ -65,7 +65,7 @@ class ArrayContainer(Container):
         if ('array' not in d.keys()) or ('labels' not in d.keys()):
             raise TypeError("Not a valid ArrayContainer. File does not have required 'array' and 'labels' keys")
 
-        return cls(array=d['array'], labels=d['labels'])
+        return cls(**d)
 
     def to_hdf5(self, path, key: str = 'ARRAY_CONTAINER'):
         hdftools.save_dict(self.to_dict(), path, group=key)

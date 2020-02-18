@@ -191,6 +191,9 @@ class Node(metaclass=ABCMeta):
 
             display(w)
 
+    def update_gui(self):
+        pass
+
     def set_param(self, widget):
         name = widget['owner'].description
         val = widget['owner'].value
